@@ -1,0 +1,40 @@
+---
+layout: "post"
+title: "CoreWlan框架学习解析"
+date: "2016-04-13 11:05"
+tags:
+ - CoreWlan
+---
+
+CoreWlan 框架解析
+========
+CoreWlan框基础类
+--------
+* `CWWiFiClient`
+* `CWInterface`
+* `CWNetwork`
+* `CWNetworkProfile`与`CWMutableNetworkProfile`
+* `CWConfiguration`与`CWMutableConfiguration`
+* `CWChannel`
+* `CoreWlanUtil`
+* `CoreWLANTypes`  
+主要由以上类组成，接下来我们一一来看下这些类给我们提供了什么功能接口，以及具有哪些属性:  
+ __首先来看来有哪些类型的枚举__
+ * [[IEEE 802.11 (无线局域网通用)的标准](https://zh.wikipedia.org/wiki/IEEE_802.11)
+   * ``` objc
+   typedef NS_ENUM(NSInteger, CWPHYMode)
+{
+	kCWPHYModeNone		= 0,
+	kCWPHYMode11a		= 1,
+	kCWPHYMode11b		= 2,
+	kCWPHYMode11g		= 3,
+	kCWPHYMode11n		= 4,
+  kCWPHYMode11ac  = 5,
+} NS_ENUM_AVAILABLE_MAC(10_7);  
+```
+
+
+
+
+CoreWlan使用方式
+--------

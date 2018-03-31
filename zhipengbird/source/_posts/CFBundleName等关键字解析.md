@@ -1,0 +1,40 @@
+---
+title: CFBundleName等关键字解析
+date: 2016-07-28 09:53:59
+tags:
+---
+
+__CFBundleName:__ CFBundleName指定了该束的简称。简称应该小于16个字符并且适合在菜单和“关于”中显示。通过把它加入到适当的.lproj子文件夹下的InfoPlist.strings文件中，该关键字可以被本地化。如果您本地化了该关键字，那您也应该提供一个CFBundleDisplayName关键字的本地化版本。
+
+<!-- more -->
+
+__CFBundleDisplayName:__ CFBundleDisplayName关键字指定了一个字符串值来标识束的显示名称。Finder和其他用户界面组件会把它显示给用户。这个名称可以与文件系统中的束名不同。通过把关键字加入适当的.lproj子目录中的InfoPlist.strings文件，就可以实现该关键字的本地化。如果您需要本地化这个关键字，您还应该提供一个CFBundleName关键字的本地化版本
+
+__CFBundleDevelopmentRegion:__ CFBundleDevelopmentRegion关键字指定了一个字符串值来标识束的地区。通常对应于作者的母语。如果不能找到用户首选的地区或语言的资源，系统最后会使用该值。
+
+__CFBundleIdentifier:__ CFBundleIdentifier关键字指定了束的一个唯一的标识字符串。该标识符采用了类似Java包的命名方式，例如com.apple.myapp。该束标识符可以在运行时定位束。预置系统使用这个字符串来唯一地标识每个应用程序。
+
+__CFBundleInfoDictionaryVersion:__ CFBundleInfoDictionaryVersion关键字指定了属性列表结构的当前版本号。该关键字的存在使得可以支持Info.plist格式将来的版本。在您建立一个束时，Project Builder会自动产生该关键字。
+
+__CFBundleVersion:__ CFBundleVersion关键字指定了一个字符串用来标识创建号。该关键字的值通常随每一次创建而改变，并且会被显示在Cocoa"关于"对话框中的扩号里。
+
+为了指定一个发布版的束的版本信息，可以使用CFBundleShortVersionString关键字。参见“CFBundleShortVersionString”。
+
+__CFBundlePackageType:__ CFBundlePackageType关键字指定了束的类型，类似于Mac OS 9的文件类型代码。该关键字的值包含一个四个字母长的代码。应用程序的代码是‘APPL’；框架的代码是‘FMWK’；可装载束的代码是‘BND’。如果您需要，您也可以为可装载束选择其他特殊的类型代码。
+
+
+__CFBundleSignature:__ CFBundleSignature关键字指定了束的创建者，类似于Mac OS 9中的文件创建者代码。该关键字的值包含四字母长的代码，用来确定每一个束。
+
+
+__LSRequiresIPhoneOS:__ 因此如果你的应用只能在iPhone环境下使用的话，请设置为True。
+
+__CFBundleAllowMixedLocalizations:__ 我们只需要在项目的 Info.plist文件中将这个键的值设置为 true。顾名思义，这个键允许混合形式的本地化。也就是说，当你设置了这个键之后，不管你的应用是否支持当前设备的语言环境，iOS系统都会尽可能都根据当前的语言进行本地化。
+
+__CFBundleExecutable:__ CFBundleExecutable标识了束的可执行主文件的名称。对于一个应用程序来说,就是该应用程序的可执行文件。对于一个可加载束,它是一个可以被束动态加载的二进制文件。对于一个框架，它是一个共享库。Project Builder会自动把该关键字加入到合适项目的Info.plist文件中。
+
+对于框架，考虑到启动效率的原因，可执行文件名需要和框架名同名。该可执行文件名不应该包含可用于多种平台的扩展名。
+
+_注意，您必须在束的Info.plist文件中包含一个有效的CFBundleExecutable关键字。即使当用户重命名应用程序或束的目录时，Mac OS X也可以使用这个关键字来定位可执行文件和共享库._
+
+
+__UIDeviceFamily:__ 支持的设备

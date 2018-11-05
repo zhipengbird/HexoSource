@@ -1,0 +1,17 @@
+{
+    "files.exclude": {  
+        "**/.git": true,  
+        "**/.svn": true,  
+        "**/.DS_Store": true,  
+        "**/node_modules": true,  
+        "**/themes": false
+    },
+    "editor.find.autoFindInSelection": true,
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": true
+    },
+    "files.autoSave": "onFocusChange",
+    "editor.acceptSuggestionOnEnter": "smart"
+}

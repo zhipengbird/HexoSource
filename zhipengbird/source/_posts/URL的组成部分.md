@@ -81,3 +81,23 @@ https://item.jd.com/11818781778.html#crumb-wrap
         [paramsDic setValue:item.value forKey:item.name];
     }
 ```
+
+添加查询字段
+```objc
+NS_ASSUME_NONNULL_BEGIN
+
+@interface NSURLComponents (addQueryItem)
+-(void)addQueryItem:(NSURLQueryItem*)queryItem;
+@end
+
+NS_ASSUME_NONNULL_END
+
+@implementation NSURLComponents (addQueryItem)
+-(void)addQueryItem:(NSURLQueryItem *)queryItem{
+    NSMutableArray * queryitems = [NSMutableArray arrayWithArray:self.queryItems];
+    [queryitems addObject:queryItem];
+    self.queryItems = queryitems;
+}
+@end
+
+```

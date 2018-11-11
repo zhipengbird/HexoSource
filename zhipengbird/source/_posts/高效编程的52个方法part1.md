@@ -157,4 +157,46 @@ NSString *const QMPlayerDidStopNotification = @"PlayerDidStop";
 > 2. 在实现文件中使用static const 来定义“只在编译单元可见的常量（translation-unit-specific constant)”.由于此类常量不在全局符号表中，所有无须为其添加前缀
 > 3. 在头文件中使用extern来声明全局常量，并在相关的实现文件中定义其值。这种常量要出现在全局符号表中，所以其名称要加以区分，通常使用与之相关的类名做前缀
 
+# 用枚举表示状态、选项、状态码
+由于OC基于C语言，所以C语言有的功能它都有，其中之一就是枚举类型：`enum`,系统框架中使频繁使用到此类型，然而我们容易忽视它。在以一系列常量来表示错误状态码或可组合的选项时，极宜使用枚举为其命名。
+枚举只是一种常量的命名方式。某个对象所经历的各种状态就可以定义为一个简单的枚举集（enumeration set）
+{% codeblock AVPlayer播放状态  lang:objc   %}
+typedef NS_ENUM(NSInteger, AVPlayerStatus) {
+	AVPlayerStatusUnknown,
+	AVPlayerStatusReadyToPlay,
+	AVPlayerStatusFailed
+};
+{% endcodeblock %}
+由于每个状态都用一个便于理解的值表示，所以这样写出来的代码更易懂。编译器会为枚举分配一个独有的编号，从0开始，每个枚举递增1。实现枚举所用的数据类型取决于编译器，不过其二进制位的个数必须完全表示下枚举编号才行。在上述例子中由于最大编号是2，所以使用1个字节的char类型就行（*一个字节含8个二进制位，所以最多可以表示256种枚举的枚举变量*）*我们也可以手动设置枚举的值*
+
+还有另外一种情况我们应该使用枚举，就是定义选项的进候。若这些选项可以彼此组合，则更应如此。只要枚举定义的对，各选项间就可以通过“按位或操作符”来组合。如：
+{% codeblock UIView的autResizing选项  lang:objc   %}
+typedef NS_OPTIONS(NSUInteger, UIViewAutoresizing) {
+    UIViewAutoresizingNone                 = 0,
+    UIViewAutoresizingFlexibleLeftMargin   = 1 << 0,
+    UIViewAutoresizingFlexibleWidth        = 1 << 1,
+    UIViewAutoresizingFlexibleRightMargin  = 1 << 2,
+    UIViewAutoresizingFlexibleTopMargin    = 1 << 3,
+    UIViewAutoresizingFlexibleHeight       = 1 << 4,
+    UIViewAutoresizingFlexibleBottomMargin = 1 << 5
+};
+{% endcodeblock %}
+每个选项均可启用或禁用，使用上述方式定义的枚举值即可保证这一点，因为每个枚举值所对应的二进制位中只有一个二进制位的值是1。用“按位或操作符”可以组合多个选项。用“按位与操作符”即可判断出是否已启用某个选项。
+{% codeblock 判断某个选项是否启用  lang:objc   %}
+   UIViewAutoresizing resizing = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight;
+    if (resizing&UIViewAutoresizingFlexibleWidth) {
+        ///是否启用UIViewAutoresizingFlexibleWidth
+    }
+{% endcodeblock %}
+> 凡是需要以按位或操作来组合的枚举都应使用`NS_OPTIONS`定义。若枚举不需要进行组合，则应用`NS_ENUM`来定义。
+
+枚举在switch中的使用。
+我们习惯在switch语句中加上default分支。然而使用枚举来定义状态机，则最好不要使用default分支，这样如果稍后增加一种状态，那么编译器就会发出警告，提示新加入的状态未在switch分支中处理。若使用了default分支，那么这就会处理这个新的状态，从而编译器不会发出警告信息。
+
+>总结
+>1. 应用枚举来表示状态机的状态，传递给方法的选项以及状态码等值，给这个值取个易懂的名字
+>2. 如果把传递给某个方法的选项表示为枚举，而多个选项又可同时使用，那么将各选项的值定义为2的幂，以便通过按位或操作将其进行组合
+>3. 用`NS_ENUM`与`NS_OPTIONS`宏来定义枚举类型，并指明其底层数据类型。这样做可以确保枚举是用开发者所选的底层数据类型实现出来的，而不会采用编译器所选的类型。
+>4. 在处理枚举类型的switch语句中不要实现default分支。这样在加入新的枚举后，编译器会提示开发者：switch语句中有未处理的枚举选项。 
+
 

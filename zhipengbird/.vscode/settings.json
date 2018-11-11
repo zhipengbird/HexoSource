@@ -5,6 +5,9 @@
         "**/.DS_Store": true,  
         "**/node_modules": true,  
         "**/themes": false
+        ,
+        "**/.deploy_git":true,
+        "**/public":true
     },
     "editor.find.autoFindInSelection": true,
     "editor.quickSuggestions": {
@@ -12,6 +15,5 @@
         "comments": false,
         "strings": true
     },
-    "files.autoSave": "onFocusChange",
     "editor.acceptSuggestionOnEnter": "smart"
 }

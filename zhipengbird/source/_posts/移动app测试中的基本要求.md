@@ -2,7 +2,8 @@
 title: 移动app测试中的基本要求
 date: 2017-03-11 13:14:51
 categories: 测试
-tags: 测试
+tags: 
+- 测试
 ---
 
 # 移动app测试中的基本要求

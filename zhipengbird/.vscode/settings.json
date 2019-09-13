@@ -4,8 +4,7 @@
         "**/.svn": true,  
         "**/.DS_Store": true,  
         "**/node_modules": true,  
-        "**/themes": false
-        ,
+        "**/themes": true ,
         "**/.deploy_git":true,
         "**/public":true
     },

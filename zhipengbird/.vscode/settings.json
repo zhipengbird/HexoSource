@@ -4,11 +4,11 @@
         "**/.svn": true,  
         "**/.DS_Store": true,  
         "**/node_modules": true,  
-        "**/themes": true ,
+        "**/themes": false ,
         "**/.deploy_git":true,
         "**/public":true
     },
-    "editor.find.autoFindInSelection": true,
+    "editor.find.autoFindInSelection": "always",
     "editor.quickSuggestions": {
         "other": true,
         "comments": false,

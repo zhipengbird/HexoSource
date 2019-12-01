@@ -96,5 +96,119 @@ bool pop(YStackLink  &stack ,int &elem){
 和线性表类似，队列的存储方式有：链队列和循环队列
 ### 链队列
 用链表表示的队列简称为*链队列*。由队列的结构特性容易想到，一个链队列显示然需要两个分别指向队头和队尾的指针（分别称为头指针和尾指针）。为操作方便，为链队列添加一个“头结点”，并约定头指针始终指向这个附加的头结点，尾指针指向真正的队尾元素结点。一个“空”的链队列只包含一个头结点，并且队列的头指针和尾指针都指向这个头结点。
-### 循环队列
+```c++
+typedef int ValueType;
+typedef struct QueueNodel {
+    ValueType data;
+    struct QueueNodel *next;///<下一个指针
+}QueueNodel , *LinkQueueList,*QueurPtr;
 
+///<链式队列
+typedef struct LinkQueue {
+    QueurPtr front;///<队头指针
+    QueurPtr rear;///<队尾指针
+}LinkQueue;
+void initLinkQueue(LinkQueue &queue){
+    queue.front = queue.rear = new QueueNodel;
+    queue.front->next = nullptr;
+}
+
+void destroyLinkQueue(LinkQueue & queue){
+    while (queue.front) {
+        queue.rear =queue.front->next;
+        delete queue.front;
+        queue.front = queue.rear;
+    }
+}
+
+void enLinkQueue(LinkQueue &queue, ValueType value){
+    LinkQueueList node = new QueueNodel;
+    node->data = value;
+    node->next = nullptr;
+    queue.rear->next = node;
+    queue.rear = node;
+}
+
+bool deLinkQueue(LinkQueue &queue, ValueType &value){
+    if (queue.front == queue.rear) {
+        return false;
+    }
+    LinkQueueList node  = queue.front->next;
+    value = node->data;
+    queue.front->next = node->next;
+    if (queue.rear== node) {
+        queue.rear = queue.front;
+    }
+    delete node;
+    return true;
+}
+```
+### 循环队列
+和顺序栈相类似，在利用顺序分配存储结构实现队列时，除了用一维数组描述队列中数据元素的存储区域，并预设一个数组的最大空间之外，尚需要设置两个指针front和rear分别指向队头和队尾。
+为叙述方便，约定：初始化建空队列时，令front= rear = 0;每当插入一个新元素后，队尾指针rear增加1，每当删除一个队头元素时，front增加1。因此在非空队列中，头指针指向队头元素，尾指针指向队尾元素的下一个位置。
+为防止数组越界，一个较巧妙的方法是将顺序队列想像成一个首尾相接的环状空间。对于循环队列，不能以头、尾指针是否相同来判断队列的“满”或“空”。
+可以有两种处理方式：
+1. 附设一个标志位以区别队列空间“满”“空”
+2. 少用一个元素空间，约定"队尾指针在队头指针的前一个位置（指环状队列中的前一位置）"为队满。
+循环队列中头、尾指针“依环状增1”的操作可用“模”来实现。通过取模，头指针和尾指针就可以在顺序空间内按头尾衔接的方式“循环”移动。
+```c++
+const int  QUEUE_INIT_SIZE = 100;///循环队列默认初始分配最大空间
+const int  QUEUEINCREMENT = 10;///增补空间
+
+typedef int QueueValueType;
+typedef  struct YCircleQueue {
+    QueueValueType *values;///存言储队列元素的数组
+    int front;//头指针，若队列不为空，指向队头元素
+    int rear;//尾指针，若队列不为空，指向队尾元素的下一个位置
+    int queuesize;//队列当前的最大容量
+    int incrementsize;//约定扩容增加
+}YCircleQueue;
+
+void initCircleQueue(YCircleQueue &queue, int maxsize ,int incrementsize){
+    ///构建一个空队列，
+    ///为队列分配（比实际能用多一个元素的）空间
+    queue.values = new QueueValueType[maxsize + 1];
+    queue.queuesize = maxsize;
+    queue.incrementsize = incrementsize;
+    queue.front = queue.rear = 0;
+}
+
+int circlequeuelength(YCircleQueue &queue){
+    ///返回队列中的元素即队列当前长度
+    return (queue.rear - queue.front + queue.queuesize ) %queue.queuesize;
+}
+
+bool deCircleQueue(YCircleQueue &queue, QueueValueType &value){
+    ///若队列不为空，则删除队头元素，用value返回其值，并返回true
+    if (queue.front == queue.rear) {
+        return false;
+    }
+    value = queue.values[queue.front];
+    queue.front = (queue.front +1)%queue.queuesize;
+    return true;
+}
+void enCircleQueue(YCircleQueue &queue, QueueValueType value){
+    //队满了，扩容
+    if ((queue.rear + 1 )%queue.queuesize == queue.front ) {
+        incrementCircleQueueSize(queue);
+    }
+    //插入新元素value为新的队尾元素
+    queue.values[queue.rear] = value;
+    queue.rear = (queue.rear +1) %queue.queuesize;
+}
+void incrementCircleQueueSize(YCircleQueue &queue){
+    //为队列扩容
+    QueueValueType *a  = new QueueValueType[queue.queuesize + queue.incrementsize];
+    for (int k  = 0; k < queue.queuesize-1; k++) {
+        //挪原队列元素
+        a[k] = queue.values[(queue.front +k)%queue.queuesize];
+    }
+    delete queue.values; ///释放原有数组空间
+    queue.values = a;///为队列设置新的数组
+    queue.front = 0;//重置头指针
+    queue.rear = queue.queuesize - 1;//重置尾指针
+    queue.queuesize += queue.incrementsize;
+}
+```
+
+扩容操作比一次性申请空间要费时间，一般大多数的问题常常可以根据问题的性质/规模估计队列的大小，而在无法预先估计队列可能达到的容量时，最好还是采用链队列。
